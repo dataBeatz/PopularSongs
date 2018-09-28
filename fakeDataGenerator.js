@@ -48,15 +48,3 @@ const generateArtist = (id) => {
 };
 
 module.exports.generateArtist = generateArtist;
-
-// let count = 0;
-// let maxCount = 100;
-// const artists = [];
-// while (count < maxCount) {
-//   const artist = generateArtist(count);
-//   artists.push(artist);
-//   count += 1;
-// }
-
-// const json = JSON.stringify(artists, null, 2);
-// fs.writeFile(path.join(__dirname, 'seed_data', 'databeatz-data.json'), json, 'utf-8', () => console.log('Data generation done'));
