@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const Artist = require('../database/index');
 const path = require('path');
-const cors = require('cors')
+const cors = require('cors');
 
 const app = express();
 
@@ -24,15 +24,30 @@ app.get('/artist/:id', function (req, res) {
 
 
 // expect to receive {artistID, albumID, songID, added -> bool either 1 or 0}
-app.post('/artist/update', function (req, res) {
+app.post('/artist/', function (req, res) {
   let update = {};
   var objProp = `albums.${req.body.albumID}.songs.${req.body.songID}.library`;
-  update[objProp] = !!parseInt(req.body.added,10);
+  update[objProp] = !!parseInt(req.body.added, 10);
 
   Artists.findOneAndUpdate({id: req.body.artistID}, {$set:update})
   // TO DO: get current boolean value from db and send back along with mssg
     .then(() => res.json({message: 'success', added: !!parseInt(req.body.added,10)}))
     .catch(() => res.status(400).json({message: 'bad request'}));   
+});
+
+app.put('/artist/:id', (req, res) => {
+  let artistID = parseInt(req.params.id, 10);
+
+  
+  res.end();
+});
+
+app.delete('/artist/:id', (req, res) => {
+  let artistID = parseInt(req.params.id, 10);
+
+  Artists.deleteOne({ id: artistID })
+    .then(() => res.json({message: 'success'}))
+    .catch(() => res.status(400).json({message: 'bad request'}));
 });
 
 
