@@ -35,7 +35,7 @@ const pool = new Pool({
 // });
 
 const seedSongCSV = (page) => new Promise((resolve, reject) => {
-  pool.query(`copy songs(name, streams,  length,popularity, library, album_id) from '/Users/kcheez/Desktop/Code/hrsf/dataBeatz/PopularSongs/csv_data/songs/databeatz-songs${page}.csv' DELIMITER ',' CSV HEADER;`, (err, res) => {
+  pool.query(`copy songs(name,streams,length,popularity,library,album_id) from '/Users/kcheez/Desktop/Code/hrsf/dataBeatz/PopularSongs/csv_data/songs/databeatz-songs${page}.csv' DELIMITER ',' CSV HEADER;`, (err, res) => {
     if(err) {
       console.log('error copying ' + page);
       reject(err);

@@ -77,16 +77,16 @@ const generateSong = require('./dataGenerator/fakeCSVGenerator.js').generateSong
 
 const wholeCsvChunkGenerator = (stream, discography, index) => new Promise ((resolve, reject) => {
   stream.write(discography, 'utf-8', () => {
-    console.log(`generated ${index}`);
+    console.log(`generated ${index + 100000}`);
     stream.end(resolve);
   })
 });
 
 const wholeCsvGeneratorLooper = async () => {
   let startIndex = 0;
-  for (let i = 0; i < 1000; i += 1) {
+  for (let i = 0; i < 100; i += 1) {
     let discography = 'artist_id,artist_name,album_name,img,publish_date,song_name,streams,length,popularity,library,\n';
-    for (let j = startIndex; j < startIndex + 10000; j += 1) {
+    for (let j = startIndex; j < startIndex + 100000; j += 1) {
       let artist = `${generateArtist(j)}`
       for (let k = 0; k < 3; k += 1) {
         let album = `${generateAlbum()}`;
@@ -95,9 +95,9 @@ const wholeCsvGeneratorLooper = async () => {
         }
       }
     }
-    let stream = fs.createWriteStream(path.join(__dirname, 'csv_data',`databeatz0.csv`), {"flags": "a"});
+    let stream = fs.createWriteStream(path.join(__dirname, 'csv_data',`databeatz${i}.csv`), {"flags": "a"});
     await wholeCsvChunkGenerator(stream, discography, startIndex);
-    startIndex += 10000;
+    startIndex += 100000;
   }
 }
 
