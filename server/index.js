@@ -29,7 +29,6 @@ else {
                       INNER JOIN albums ON artists.artist_id = albums.artist_id 
                       INNER JOIN songs ON albums.album_id = songs.album_id 
                       WHERE artists.artist_id = ${req.params.id};`;
-    // let artistID = parseInt(req.params.id, 10);
     pool
       .query(getQuery)
       .then(data => res.status(200).json(data.rows))
