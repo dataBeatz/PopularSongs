@@ -1,8 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const Artist = require('../database/index');
+const db = require('../database/index').db;
+const pool = require('../database/index').pool;
 const path = require('path');
 const cors = require('cors');
+
 
 const app = express();
 
@@ -15,43 +17,46 @@ app.use(express.static(path.join(__dirname, '../public/')));
 
 
 app.get('/artist/:id', function (req, res) {
-  let artistID = parseInt(req.params.id, 10);
-  //let artistID = parseInt(req.query.id, 10);
-  Artist.findOne({id: artistID})
-    .then(artist => res.json(artist))
+  const getQuery = `SELECT * FROM artists 
+                    INNER JOIN albums ON artists.artist_id = albums.artist_id 
+                    INNER JOIN songs ON albums.album_id = songs.album_id 
+                    WHERE artists.artist_id = ${req.params.id};`;
+  // let artistID = parseInt(req.params.id, 10);
+  pool.query(getQuery)
+    .then(data => res.status(200).json(data.rows))
     .catch(err => console.log(err));
 });
 
 
 // expect to receive {artistID, albumID, songID, added -> bool either 1 or 0}
-app.post('/artist/', function (req, res) {
-  let update = {};
-  var objProp = `albums.${req.body.albumID}.songs.${req.body.songID}.library`;
-  update[objProp] = !!parseInt(req.body.added, 10);
+// app.post('/artist/', function (req, res) {
+//   let update = {};
+//   var objProp = `albums.${req.body.albumID}.songs.${req.body.songID}.library`;
+//   update[objProp] = !!parseInt(req.body.added, 10);
 
-  Artists.findOneAndUpdate({id: req.body.artistID}, {$set:update})
-  // TO DO: get current boolean value from db and send back along with mssg
-    .then(() => res.json({message: 'success', added: !!parseInt(req.body.added,10)}))
-    .catch(() => res.status(400).json({message: 'bad request'}));   
-});
+//   db.findOneAndUpdate({id: req.body.artistID}, {$set:update})
+//   // TO DO: get current boolean value from db and send back along with mssg
+//     .then(() => res.json({message: 'success', added: !!parseInt(req.body.added,10)}))
+//     .catch(() => res.status(400).json({message: 'bad request'}));   
+// });
 
-app.put('/artist/:id', (req, res) => {
-  let artistID = parseInt(req.params.id, 10);
+// app.put('/artist/:id', (req, res) => {
+//   let artistID = parseInt(req.params.id, 10);
 
   
-  res.end();
-});
+//   res.end();
+// });
 
-app.delete('/artist/:id', (req, res) => {
-  let artistID = parseInt(req.params.id, 10);
+// app.delete('/artist/:id', (req, res) => {
+//   let artistID = parseInt(req.params.id, 10);
 
-  Artists.deleteOne({ id: artistID })
-    .then(() => res.json({message: 'success'}))
-    .catch(() => res.status(400).json({message: 'bad request'}));
-});
+//   db.deleteOne({ id: artistID })
+//     .then(() => res.json({message: 'success'}))
+//     .catch(() => res.status(400).json({message: 'bad request'}));
+// });
 
 
-const PORT = 3003;
+const PORT = 1177;
 
 app.listen(PORT, function() {
   console.log(`listening on port ${PORT}!`);

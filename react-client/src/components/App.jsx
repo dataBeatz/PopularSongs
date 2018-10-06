@@ -24,7 +24,7 @@ class App extends React.Component {
     var randNum = Math.floor(Math.random() * 100) + 1;
     this.setState({artistID: 1});
    
-    // axios.get(`http://localhost:3003/artist/id`,{params: {id: randNum}})
+    // axios.get(`http://localhost:1177/artist/id`,{params: {id: randNum}})
     axios.get(`/artist/1`)
       .then(response => {
 
@@ -34,25 +34,25 @@ class App extends React.Component {
 
         this.setState({albumCovers: data.albums[0].img});
 
-        let albumOne = data.albums[0].songs.map(e => [0,e]);
-        let albumTwo = data.albums[1].songs.map(e => [1,e]);
-        let albumThree = data.albums[2].songs.map(e => [2,e]);
-        let allSongs = albumOne.concat(albumTwo, albumThree);
+        // let albumOne = data.albums[0].songs.map(e => [0,e]);
+        // let albumTwo = data.albums[1].songs.map(e => [1,e]);
+        // let albumThree = data.albums[2].songs.map(e => [2,e]);
+        // let allSongs = albumOne.concat(albumTwo, albumThree);
+        let allSongs = this.state.artistObj;
         
         allSongs.sort((a,b) => {
-          if (a[1].popularity > b[1].popularity) {
+          if (a.popularity > b.popularity) {
             return -1;
           }
-          if (a[1].popularity < b[1].popularity) {
+          if (a.popularity < b.popularity) {
             return 1;
           }
           return 0;
         });
         
-        console.log(allSongs);
-        allSongs = allSongs.slice(0,10);
+        popularSongs = allSongs.slice(0,10);
 
-        this.setState({popularSongs: allSongs});
+        this.setState({popularSongs: popularSongs});
       })
 
       .catch(error => {

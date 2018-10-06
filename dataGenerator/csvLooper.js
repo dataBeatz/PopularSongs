@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const generateArtist = require('./dataGenerator/fakeCSVGenerator.js').generateArtist;
-const generateAlbum = require('./dataGenerator/fakeCSVGenerator.js').generateAlbum;
-const generateSong = require('./dataGenerator/fakeCSVGenerator.js').generateSong;
+const generateArtist = require('./fakeCSVGenerator.js').generateArtist;
+const generateAlbum = require('./fakeCSVGenerator.js').generateAlbum;
+const generateSong = require('./fakeCSVGenerator.js').generateSong;
 
 
 // const artistChunkGenerator = (stream, artists, index) => new Promise ((resolve, reject) => {
