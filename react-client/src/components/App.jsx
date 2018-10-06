@@ -21,38 +21,31 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    var randNum = Math.floor(Math.random() * 100) + 1;
-    this.setState({artistID: 1});
+    var randNum = Math.floor(Math.random() * 1000000) + 9000000;
+    this.setState({artistID: randNum});
    
-    // axios.get(`http://localhost:3003/artist/id`,{params: {id: randNum}})
-    axios.get(`/artist/1`)
+    axios.get(`/artist/${randNum}`)
       .then(response => {
 
         let data = response.data;
 
-        this.setState({artistObj: data});
-
-        this.setState({albumCovers: data.albums[0].img});
-
-        let albumOne = data.albums[0].songs.map(e => [0,e]);
-        let albumTwo = data.albums[1].songs.map(e => [1,e]);
-        let albumThree = data.albums[2].songs.map(e => [2,e]);
-        let allSongs = albumOne.concat(albumTwo, albumThree);
-        
-        allSongs.sort((a,b) => {
-          if (a[1].popularity > b[1].popularity) {
-            return -1;
-          }
-          if (a[1].popularity < b[1].popularity) {
-            return 1;
-          }
-          return 0;
+        this.setState({artistObj: data}, () => {
+          let allSongs = this.state.artistObj;
+          
+          allSongs.sort((a,b) => {
+            if (a.popularity > b.popularity) {
+              return -1;
+            }
+            if (a.popularity < b.popularity) {
+              return 1;
+            }
+            return 0;
+          });
+          
+          let popularSongs = allSongs.slice(0,10);
+  
+          this.setState({popularSongs: popularSongs});
         });
-        
-        console.log(allSongs);
-        allSongs = allSongs.slice(0,10);
-
-        this.setState({popularSongs: allSongs});
       })
 
       .catch(error => {
@@ -61,15 +54,14 @@ class App extends React.Component {
   }
 
   createListOfSongs () {
-    let albumArr = [1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10];
     return this.state.popularSongs
       .map((e, i) => <Song 
-        key={e[1]._id} 
+        key={e.song_id} 
         counter={i+1} 
-        albumURL={this.state.albumCovers + albumArr[i] + '.jpg'} 
-        library={e[1].library} 
-        songName={e[1].name} 
-        streams={e[1].streams}/>);
+        albumURL={e.img} 
+        library={e.library} 
+        songName={e.song_name} 
+        streams={e.streams}/>);
   }
 
   fiveBestSongs () {
@@ -79,7 +71,6 @@ class App extends React.Component {
   render () {
 
     return (
-      //<div className={"container-fluid popular-songs"}>
       <div className={"container-fluid"} styleName={"popular-songs"}>
         <div className={"row"}> 
           <div className={"col col-lg-1"}>

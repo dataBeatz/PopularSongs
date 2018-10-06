@@ -4,10 +4,9 @@
 
 ## Related Projects
 
-  - https://github.com/teamName/repo
-  - https://github.com/teamName/repo
-  - https://github.com/teamName/repo
-  - https://github.com/teamName/repo
+  - https://github.com/dataBeatz/AlbumListMusicPlayer
+  - https://github.com/dataBeatz/RelatedArtists
+  - https://github.com/dataBeatz/Header
 
 ## Table of Contents
 
