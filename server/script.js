@@ -12,6 +12,6 @@ export default function() {
   sleep(Math.random() * .25);
   check(res, {
     "status was 200": (r) => r.status == 200,
-    "transaction time was OK": (r) => r.timings.duration < 300
+    "transaction time was OK": (r) => r.timings.duration < 600
   });
 };
