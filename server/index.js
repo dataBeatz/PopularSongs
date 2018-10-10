@@ -7,6 +7,36 @@ const db = require("../database/index").db;
 const pool = require("../database/index").pool;
 const path = require("path");
 const cors = require("cors");
+const redis = require('redis');
+
+const client = redis.createClient();
+const app = express();
+
+const getArtist = (req, res) => {
+  const artistId = req.params.id;
+  const getQuery = `SELECT * FROM artists 
+  INNER JOIN albums ON artists.artist_id = albums.artist_id 
+  INNER JOIN songs ON albums.album_id = songs.album_id 
+  WHERE artists.artist_id = ${artistId};`;
+  pool
+    .query(getQuery)
+    .then(data => {
+      let songs = data.rows;
+      res.status(200).json(songs);
+      client.setex(artistId, 3600, JSON.stringify(songs));
+    })
+    .catch(err => console.log(err));
+};
+
+const getCache = (req, res) => {
+  client.get(req.params.id, (err, result) => {
+    if (result) {
+      res.status(200).json(JSON.parse(result));
+    } else {
+      getArtist(req, res);
+    }
+  });
+};
 
 if (cluster.isMaster) {
   const cpuCount = os.cpus().length;
@@ -15,7 +45,6 @@ if (cluster.isMaster) {
   }
 }
 else {
-  const app = express();
   
   // parse application/x-www-form-urlencoded
   app.use(bodyParser.urlencoded({ extended: false }));
@@ -24,16 +53,7 @@ else {
   app.use(cors());
   app.use(express.static(path.join(__dirname, "../public/")));
   
-  app.get("/artist/:id", function(req, res) {
-    const getQuery = `SELECT * FROM artists 
-                      INNER JOIN albums ON artists.artist_id = albums.artist_id 
-                      INNER JOIN songs ON albums.album_id = songs.album_id 
-                      WHERE artists.artist_id = ${req.params.id};`;
-    pool
-      .query(getQuery)
-      .then(data => res.status(200).json(data.rows))
-      .catch(err => console.log(err));
-  });
+  app.get("/artist/:id", getCache);
   
   // expect to receive {artistID, albumID, songID, added -> bool either 1 or 0}
   // app.post('/artist/', function (req, res) {

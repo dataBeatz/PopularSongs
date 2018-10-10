@@ -12,6 +12,7 @@
     "start": "node server/index.js",
     "start-dev": "nodemon server/index.js",
     "react-dev": "webpack -d --watch",
+    "react-prod": "webpack -p",
     "seed": "node database/seeding_script.js"
   },
   "dependencies": {
@@ -37,6 +38,7 @@
     "react-css-modules": "^4.7.7",
     "react-dom": "^15.4.2",
     "reactstrap": "^6.4.0",
+    "redis": "^2.8.0",
     "style-loader": "^0.23.0"
   },
   "devDependencies": {
